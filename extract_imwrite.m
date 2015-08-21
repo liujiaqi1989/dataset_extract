@@ -36,8 +36,8 @@ end
 fileType = '*.jpg';
 fileType2 = '.jpg';
 file_doc1 = 'View_001';
-file_dataset='datasets/Crowd_PETS09S1L1/S1/L1/Time_13-57';
-file_dataset2='PETS2009S1L1_13-57';
+file_dataset='datasets/Crowd_PETS09S1L2/S1/L2/Time_14-31';
+file_dataset2='PETS2009S1L2_14-31';
 ImageSequence = dir([file_dataset '/' file_doc1 '/' fileType])';
 for i = 1 : Num_frames
       
@@ -49,6 +49,7 @@ end
 a=1;
 IDvector=[];
 for i=1:Num_frames
+    if any(c{1,i})
     [~,cns]=size(c{1,i});
   for j=1:cns
       p=c{1,i};
@@ -67,6 +68,7 @@ for i=1:Num_frames
         a=a+1;
    end
   end
+    end
 end
 display('Extracting is successful !');
 %%
