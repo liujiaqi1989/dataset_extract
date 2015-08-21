@@ -97,14 +97,15 @@ xRoot = xDoc.getDocumentElement;
 schema = char(xRoot.getAttribute('name'));
 frames=xRoot.getElementsByTagName('frame');
 Num_frames=frames.getLength;
-c1=zeros(5,1);
 handles.c=cell(1,Num_frames);
 for i=0:Num_frames-1
+    c1=zeros(5,1);
     frameelement=frames.item(i);
     frameid=char(frameelement.getAttribute('number'));
     object=frameelement.getElementsByTagName('object');
     Num_object=object.getLength;
     for j=0:Num_object-1
+        
         objectelement=object.item(j);
         objectid=char(objectelement.getAttribute('id'));
         boxes=objectelement.getElementsByTagName('box');
@@ -259,7 +260,7 @@ imshow(handles.ImageSequence8(1).Im/256, 'Parent', handles.axes8);
 % handles.ImageSequence8(1:handles.NumImage)=[];
 
 %%
-for i = 1 : handles.NumImage
+for i = 1 : 10%handles.NumImage
         %%
         handles.ImageSequence1(i).Image_loc = ['/' filefolder '/' file_dataset '/' file_doc1 '/' handles.ImageSequence1(i).name];
         handles.ImageSequence1(i).Im = double(imread(handles.ImageSequence1(i).Image_loc));
