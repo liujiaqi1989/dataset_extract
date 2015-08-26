@@ -87,8 +87,11 @@ function ImportData_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 global count file_dataset
 count=1;
+set(handles.result,'string','');
 set(handles.uitable1,'RowName',{'ID','h','w','xc','yc'},'data',[]);
-FrameNum=10;
+handles.a=1;
+handles.IDvector=[];
+FrameNum=50;
 %%
 [filename, pathname, filterindex] = uigetfile('*.*', 'Pick an xml-file');
 F=[pathname,filename];
@@ -126,6 +129,7 @@ end
 %%
 %file_dataset='Crowd_PETS09S2L1';
 fileType = '*.jpg';
+fileType2 ='*.png';
 file_doc1 = 'View_001';
 file_doc2 = 'View_002';
 file_doc3 = 'View_003';
@@ -134,51 +138,63 @@ file_doc5 = 'View_005';
 file_doc6 = 'View_006';
 file_doc7 = 'View_007';
 file_doc8 = 'View_008';
-filefolder='Users/liujiaqi/Documents/MAtLAB/PETS/datasets'; %path for hard disk
-%filefolder='Volumes/JADE';%path for USB stick
+%filefolder='/Users/liujiaqi/Documents/MAtLAB/PETS/alldatasets/datasets'; %path for hard disk
+if ismac
+filefolder=fullfile('/','Volumes','Lexar', 'alldatasets','datasets');%path for USB stick
+end
+if ispc
+    filefolder=fullfile('E:\','alldatasets','datasets');%path for USB stick
+end
 %%
-if strcmp(file_dataset,'Crowd_PETS09S2L1/S2/L1/Time_12-34')
-    
-handles.ImageSequence1 = dir(['/' filefolder '/' file_dataset '/' file_doc1 '/' fileType])';
-handles.ImageSequence3 = dir(['/' filefolder '/' file_dataset '/' file_doc3 '/' fileType])';
-handles.ImageSequence4 = dir(['/' filefolder '/' file_dataset '/' file_doc4 '/' fileType])';
-handles.ImageSequence5 = dir(['/' filefolder '/' file_dataset '/' file_doc5 '/' fileType])';
-handles.ImageSequence6 = dir(['/' filefolder '/' file_dataset '/' file_doc6 '/' fileType])';
-handles.ImageSequence7 = dir(['/' filefolder '/' file_dataset '/' file_doc7 '/' fileType])';
-handles.ImageSequence8 = dir(['/' filefolder '/' file_dataset '/' file_doc8 '/' fileType])';
+if strcmp(file_dataset,fullfile('Crowd_PETS09S2L1','S2','L1','Time_12-34'))%'Crowd_PETS09S2L1/S2/L1/Time_12-34'
+ handles.ImageSequence1 = dir(fullfile(filefolder, file_dataset, file_doc1, fileType));
+ handles.ImageSequence3 = dir(fullfile(filefolder, file_dataset, file_doc3, fileType)); 
+ handles.ImageSequence4 = dir(fullfile(filefolder, file_dataset, file_doc4, fileType)); 
+ handles.ImageSequence5 = dir(fullfile(filefolder, file_dataset, file_doc5, fileType)); 
+ handles.ImageSequence6 = dir(fullfile(filefolder, file_dataset, file_doc6, fileType)); 
+ handles.ImageSequence7 = dir(fullfile(filefolder, file_dataset, file_doc7, fileType)); 
+ handles.ImageSequence8 = dir(fullfile(filefolder, file_dataset, file_doc8, fileType)); 
+
+% handles.ImageSequence1 = dir(['/' filefolder '/' file_dataset '/' file_doc1 '/' fileType])';
+% handles.ImageSequence3 = dir(['/' filefolder '/' file_dataset '/' file_doc3 '/' fileType])';
+% handles.ImageSequence4 = dir(['/' filefolder '/' file_dataset '/' file_doc4 '/' fileType])';
+% handles.ImageSequence5 = dir(['/' filefolder '/' file_dataset '/' file_doc5 '/' fileType])';
+% handles.ImageSequence6 = dir(['/' filefolder '/' file_dataset '/' file_doc6 '/' fileType])';
+% handles.ImageSequence7 = dir(['/' filefolder '/' file_dataset '/' file_doc7 '/' fileType])';
+% handles.ImageSequence8 = dir(['/' filefolder '/' file_dataset '/' file_doc8 '/' fileType])';
 handles.NumImage = length(handles.ImageSequence1);
 %% Read data from USB stick
-% handles.NumImage = length(handles.ImageSequence1)/2;
-% handles.ImageSequence1(1:handles.NumImage)=[];
-% handles.ImageSequence3(1:handles.NumImage)=[];
-% handles.ImageSequence4(1:handles.NumImage)=[];
-% handles.ImageSequence5(1:handles.NumImage)=[];
-% handles.ImageSequence6(1:handles.NumImage)=[];
-% handles.ImageSequence7(1:handles.NumImage)=[];
-% handles.ImageSequence8(1:handles.NumImage)=[];
+handles.NumImage = length(handles.ImageSequence1)/2;
+handles.ImageSequence1(1:handles.NumImage)=[];
+handles.ImageSequence3(1:handles.NumImage)=[];
+handles.ImageSequence4(1:handles.NumImage)=[];
+handles.ImageSequence5(1:handles.NumImage)=[];
+handles.ImageSequence6(1:handles.NumImage)=[];
+handles.ImageSequence7(1:handles.NumImage)=[];
+handles.ImageSequence8(1:handles.NumImage)=[];
 
 %%
-for i = 1 : handles.NumImage
+for i = 1 : FrameNum
         %%
-        handles.ImageSequence1(i).Image_loc = ['/' filefolder '/' file_dataset '/' file_doc1 '/' handles.ImageSequence1(i).name];
+        handles.ImageSequence1(i).Image_loc = fullfile(filefolder, file_dataset, file_doc1, handles.ImageSequence1(i).name);
         handles.ImageSequence1(i).Im = double(imread(handles.ImageSequence1(i).Image_loc));
         %%
-        handles.ImageSequence3(i).Image_loc = ['/' filefolder '/' file_dataset '/' file_doc3 '/' handles.ImageSequence3(i).name];
+        handles.ImageSequence3(i).Image_loc = fullfile(filefolder, file_dataset, file_doc3, handles.ImageSequence3(i).name);
         handles.ImageSequence3(i).Im = double(imread(handles.ImageSequence3(i).Image_loc));
         %%
-        handles.ImageSequence4(i).Image_loc = ['/' filefolder '/' file_dataset '/' file_doc4 '/' handles.ImageSequence4(i).name];
+        handles.ImageSequence4(i).Image_loc = fullfile(filefolder, file_dataset, file_doc4, handles.ImageSequence4(i).name);
         handles.ImageSequence4(i).Im = double(imread(handles.ImageSequence4(i).Image_loc));
         %%
-        handles.ImageSequence5(i).Image_loc = ['/' filefolder '/' file_dataset '/' file_doc5 '/' handles.ImageSequence5(i).name];
+        handles.ImageSequence5(i).Image_loc = fullfile(filefolder, file_dataset, file_doc5, handles.ImageSequence5(i).name);
         handles.ImageSequence5(i).Im = double(imread(handles.ImageSequence5(i).Image_loc));
         %%
-        handles.ImageSequence6(i).Image_loc = ['/' filefolder '/' file_dataset '/' file_doc6 '/' handles.ImageSequence6(i).name];
+        handles.ImageSequence6(i).Image_loc = fullfile(filefolder, file_dataset, file_doc6, handles.ImageSequence6(i).name);
         handles.ImageSequence6(i).Im = double(imread(handles.ImageSequence6(i).Image_loc));
         %%
-        handles.ImageSequence7(i).Image_loc = ['/' filefolder '/' file_dataset '/' file_doc7 '/' handles.ImageSequence7(i).name];
+        handles.ImageSequence7(i).Image_loc = fullfile(filefolder, file_dataset, file_doc7, handles.ImageSequence7(i).name);
         handles.ImageSequence7(i).Im = double(imread(handles.ImageSequence7(i).Image_loc));
         %%
-        handles.ImageSequence8(i).Image_loc = ['/' filefolder '/' file_dataset '/' file_doc8 '/' handles.ImageSequence8(i).name];
+        handles.ImageSequence8(i).Image_loc = fullfile(filefolder, file_dataset, file_doc8, handles.ImageSequence8(i).name);
         handles.ImageSequence8(i).Im = double(imread(handles.ImageSequence8(i).Image_loc));
 end
    
@@ -192,44 +208,48 @@ imshow(handles.ImageSequence6(1).Im/256, 'Parent', handles.axes6);
 imshow(handles.ImageSequence7(1).Im/256, 'Parent', handles.axes7);
 imshow(handles.ImageSequence8(1).Im/256, 'Parent', handles.axes8);
 
-else if strcmp(file_dataset,'Crowd_PETS09S3MF/S3/Multiple_Flow/Time_12-43')
-        
-handles.ImageSequence1 = dir(['/' filefolder '/' file_dataset '/' file_doc1 '/' fileType])';
-handles.ImageSequence2 = dir(['/' filefolder '/' file_dataset '/' file_doc2 '/' fileType])';
-handles.ImageSequence5 = dir(['/' filefolder '/' file_dataset '/' file_doc5 '/' fileType])';
-handles.ImageSequence6 = dir(['/' filefolder '/' file_dataset '/' file_doc6 '/' fileType])';
-handles.ImageSequence7 = dir(['/' filefolder '/' file_dataset '/' file_doc7 '/' fileType])';
-handles.ImageSequence8 = dir(['/' filefolder '/' file_dataset '/' file_doc8 '/' fileType])';
+elseif strcmp(file_dataset,fullfile('Crowd_PETS09S3MF','S3','Multiple_Flow','Time_12-43'))%'Crowd_PETS09S3MF/S3/Multiple_Flow/Time_12-43'
+   handles.ImageSequence1 = dir(fullfile(filefolder, file_dataset, file_doc1, fileType));
+   handles.ImageSequence2 = dir(fullfile(filefolder, file_dataset, file_doc2, fileType));
+   handles.ImageSequence5 = dir(fullfile(filefolder, file_dataset, file_doc5, fileType));
+   handles.ImageSequence6 = dir(fullfile(filefolder, file_dataset, file_doc6, fileType));
+   handles.ImageSequence7 = dir(fullfile(filefolder, file_dataset, file_doc7, fileType));
+   handles.ImageSequence8 = dir(fullfile(filefolder, file_dataset, file_doc8, fileType));
+% handles.ImageSequence1 = dir(['/' filefolder '/' file_dataset '/' file_doc1 '/' fileType])';
+% handles.ImageSequence2 = dir(['/' filefolder '/' file_dataset '/' file_doc2 '/' fileType])';
+% handles.ImageSequence5 = dir(['/' filefolder '/' file_dataset '/' file_doc5 '/' fileType])';
+% handles.ImageSequence6 = dir(['/' filefolder '/' file_dataset '/' file_doc6 '/' fileType])';
+% handles.ImageSequence7 = dir(['/' filefolder '/' file_dataset '/' file_doc7 '/' fileType])';
+% handles.ImageSequence8 = dir(['/' filefolder '/' file_dataset '/' file_doc8 '/' fileType])';
 handles.NumImage = length(handles.ImageSequence1);
 %% Read data from USB stick
-% handles.NumImage = length(handles.ImageSequence1)/2;
-% handles.ImageSequence1(1:handles.NumImage)=[];
-% handles.ImageSequence3(1:handles.NumImage)=[];
-% handles.ImageSequence4(1:handles.NumImage)=[];
-% handles.ImageSequence5(1:handles.NumImage)=[];
-% handles.ImageSequence6(1:handles.NumImage)=[];
-% handles.ImageSequence7(1:handles.NumImage)=[];
-% handles.ImageSequence8(1:handles.NumImage)=[];
+handles.NumImage = length(handles.ImageSequence1)/2;
+handles.ImageSequence1(1:handles.NumImage)=[];
+handles.ImageSequence2(1:handles.NumImage)=[];
+handles.ImageSequence5(1:handles.NumImage)=[];
+handles.ImageSequence6(1:handles.NumImage)=[];
+handles.ImageSequence7(1:handles.NumImage)=[];
+handles.ImageSequence8(1:handles.NumImage)=[];
 
 %%
-for i = 1 : handles.NumImage
+for i = 1 : FrameNum
         %%
-        handles.ImageSequence1(i).Image_loc = ['/' filefolder '/' file_dataset '/' file_doc1 '/' handles.ImageSequence1(i).name];
+        handles.ImageSequence1(i).Image_loc = fullfile(filefolder, file_dataset, file_doc1, handles.ImageSequence1(i).name);
         handles.ImageSequence1(i).Im = double(imread(handles.ImageSequence1(i).Image_loc));
         %%
-        handles.ImageSequence2(i).Image_loc = ['/' filefolder '/' file_dataset '/' file_doc2 '/' handles.ImageSequence2(i).name];
+        handles.ImageSequence2(i).Image_loc = fullfile(filefolder, file_dataset, file_doc2, handles.ImageSequence2(i).name);
         handles.ImageSequence2(i).Im = double(imread(handles.ImageSequence2(i).Image_loc));
         %%
-        handles.ImageSequence5(i).Image_loc = ['/' filefolder '/' file_dataset '/' file_doc5 '/' handles.ImageSequence5(i).name];
+        handles.ImageSequence5(i).Image_loc = fullfile(filefolder, file_dataset, file_doc5, handles.ImageSequence5(i).name);
         handles.ImageSequence5(i).Im = double(imread(handles.ImageSequence5(i).Image_loc));
         %%
-        handles.ImageSequence6(i).Image_loc = ['/' filefolder '/' file_dataset '/' file_doc6 '/' handles.ImageSequence6(i).name];
+        handles.ImageSequence6(i).Image_loc = fullfile(filefolder, file_dataset, file_doc6, handles.ImageSequence6(i).name);
         handles.ImageSequence6(i).Im = double(imread(handles.ImageSequence6(i).Image_loc));
         %%
-        handles.ImageSequence7(i).Image_loc = ['/' filefolder '/' file_dataset '/' file_doc7 '/' handles.ImageSequence7(i).name];
+        handles.ImageSequence7(i).Image_loc = fullfile(filefolder, file_dataset, file_doc7, handles.ImageSequence7(i).name);
         handles.ImageSequence7(i).Im = double(imread(handles.ImageSequence7(i).Image_loc));
         %%
-        handles.ImageSequence8(i).Image_loc = ['/' filefolder '/' file_dataset '/' file_doc8 '/' handles.ImageSequence8(i).name];
+        handles.ImageSequence8(i).Image_loc = fullfile(filefolder, file_dataset, file_doc8, handles.ImageSequence8(i).name);
         handles.ImageSequence8(i).Im = double(imread(handles.ImageSequence8(i).Image_loc));
 end
    
@@ -242,36 +262,221 @@ imshow(handles.ImageSequence5(1).Im/256, 'Parent', handles.axes5);
 imshow(handles.ImageSequence6(1).Im/256, 'Parent', handles.axes6);
 imshow(handles.ImageSequence7(1).Im/256, 'Parent', handles.axes7);
 imshow(handles.ImageSequence8(1).Im/256, 'Parent', handles.axes8);
-      
-    else
-        handles.ImageSequence1 = dir(['/' filefolder '/' file_dataset '/' file_doc1 '/' fileType])';
-        handles.ImageSequence2 = dir(['/' filefolder '/' file_dataset '/' file_doc1 '/' fileType])';
-        handles.ImageSequence3 = dir(['/' filefolder '/' file_dataset '/' file_doc3 '/' fileType])';
-        handles.ImageSequence4 = dir(['/' filefolder '/' file_dataset '/' file_doc4 '/' fileType])';
-        handles.NumImage = length(handles.ImageSequence1);
+elseif strcmp(file_dataset,'tud-stadtmitte')
+    handles.ImageSequence1 = dir(fullfile( filefolder, file_dataset, fileType2))';
+    handles.NumImage = length(handles.ImageSequence1);
 %% Read data from USB stick
-% handles.NumImage = length(handles.ImageSequence1)/2;
-% handles.ImageSequence1(1:handles.NumImage)=[];
-% handles.ImageSequence3(1:handles.NumImage)=[];
-% handles.ImageSequence4(1:handles.NumImage)=[];
-% handles.ImageSequence5(1:handles.NumImage)=[];
-% handles.ImageSequence6(1:handles.NumImage)=[];
-% handles.ImageSequence7(1:handles.NumImage)=[];
-% handles.ImageSequence8(1:handles.NumImage)=[];
+handles.NumImage = length(handles.ImageSequence1)/2;
+handles.ImageSequence1(1:handles.NumImage)=[];
 
 %%
-for i = 1 : 10%handles.NumImage
+for i = 1 : FrameNum%handles.NumImage
         %%
-        handles.ImageSequence1(i).Image_loc = ['/' filefolder '/' file_dataset '/' file_doc1 '/' handles.ImageSequence1(i).name];
+        handles.ImageSequence1(i).Image_loc = fullfile(filefolder, file_dataset, handles.ImageSequence1(i).name);
+        handles.ImageSequence1(i).Im = double(imread(handles.ImageSequence1(i).Image_loc));
+
+end
+   
+%%
+cla(handles.axes2);
+cla(handles.axes3);
+cla(handles.axes4);
+cla(handles.axes5);
+cla(handles.axes6);
+cla(handles.axes7);
+cla(handles.axes8);
+imshow(handles.ImageSequence1(1).Im/256, 'Parent', handles.axes1);
+elseif strcmp(file_dataset,'tud-campus')
+    handles.ImageSequence1 = dir(fullfile(filefolder, file_dataset, fileType2))';
+    handles.NumImage = length(handles.ImageSequence1);
+%% Read data from USB stick
+handles.NumImage = length(handles.ImageSequence1)/2;
+handles.ImageSequence1(1:handles.NumImage)=[];
+
+%%
+for i = 1 : FrameNum%handles.NumImage
+        %%
+        handles.ImageSequence1(i).Image_loc = fullfile( filefolder, file_dataset,  handles.ImageSequence1(i).name);
+        handles.ImageSequence1(i).Im = double(imread(handles.ImageSequence1(i).Image_loc));
+
+end
+   
+%%
+cla(handles.axes2);
+cla(handles.axes3);
+cla(handles.axes4);
+cla(handles.axes5);
+cla(handles.axes6);
+cla(handles.axes7);
+cla(handles.axes8);
+imshow(handles.ImageSequence1(1).Im/256, 'Parent', handles.axes1);
+elseif strcmp(file_dataset,'tud-crossing')
+    handles.ImageSequence1 = dir(fullfile(filefolder, file_dataset, fileType2))';
+    handles.NumImage = length(handles.ImageSequence1);
+%% Read data from USB stick
+handles.NumImage = length(handles.ImageSequence1)/2;
+handles.ImageSequence1(1:handles.NumImage)=[];
+
+%%
+for i = 1 : FrameNum%handles.NumImage
+        %%
+        handles.ImageSequence1(i).Image_loc = fullfile(filefolder,file_dataset,handles.ImageSequence1(i).name);
+        handles.ImageSequence1(i).Im = double(imread(handles.ImageSequence1(i).Image_loc));
+
+end
+   
+%%
+cla(handles.axes2);
+cla(handles.axes3);
+cla(handles.axes4);
+cla(handles.axes5);
+cla(handles.axes6);
+cla(handles.axes7);
+cla(handles.axes8);
+imshow(handles.ImageSequence1(1).Im/256, 'Parent', handles.axes1);
+elseif strcmp(file_dataset,'Sequence#0')
+    handles.ImageSequence1 = dir(fullfile(filefolder, file_dataset, file_doc1,fileType2))';
+    handles.ImageSequence2 = dir(fullfile(filefolder , file_dataset, file_doc2, fileType2))';
+    handles.NumImage = length(handles.ImageSequence1);
+%% Read data from USB stick
+handles.NumImage = length(handles.ImageSequence1)/2;
+handles.ImageSequence1(1:handles.NumImage)=[];
+handles.ImageSequence2(1:handles.NumImage)=[];
+
+%%
+for i = 1 : FrameNum%handles.NumImage
+        %%
+        handles.ImageSequence1(i).Image_loc = fullfile(filefolder, file_dataset,file_doc1, handles.ImageSequence1(i).name);
+        handles.ImageSequence1(i).Im = double(imread(handles.ImageSequence1(i).Image_loc));
+        handles.ImageSequence2(i).Image_loc = fullfile(filefolder,file_dataset,file_doc2,handles.ImageSequence2(i).name);
+        handles.ImageSequence2(i).Im = double(imread(handles.ImageSequence2(i).Image_loc));
+
+end
+   
+%%
+
+cla(handles.axes3);
+cla(handles.axes4);
+cla(handles.axes5);
+cla(handles.axes6);
+cla(handles.axes7);
+cla(handles.axes8);
+imshow(handles.ImageSequence1(1).Im/256, 'Parent', handles.axes1);
+imshow(handles.ImageSequence2(1).Im/256, 'Parent', handles.axes2);
+elseif strcmp(file_dataset,'Bahnhof')
+    handles.ImageSequence1 = dir(fullfile(filefolder,file_dataset,file_doc1,fileType2))';
+    handles.ImageSequence2 = dir(fullfile(filefolder,file_dataset,file_doc2,fileType2))';
+    handles.NumImage = length(handles.ImageSequence1);
+%% Read data from USB stick
+handles.NumImage = length(handles.ImageSequence1)/2;
+handles.ImageSequence1(1:handles.NumImage)=[];
+handles.ImageSequence2(1:handles.NumImage)=[];
+
+%%
+for i = 1 : FrameNum%handles.NumImage
+        %%
+        handles.ImageSequence1(i).Image_loc =fullfile(filefolder, file_dataset, file_doc1,handles.ImageSequence1(i).name);
+        handles.ImageSequence1(i).Im = double(imread(handles.ImageSequence1(i).Image_loc));
+        handles.ImageSequence2(i).Image_loc = fullfile(filefolder, file_dataset, file_doc2,handles.ImageSequence2(i).name);
+        handles.ImageSequence2(i).Im = double(imread(handles.ImageSequence2(i).Image_loc));
+
+end
+   
+%%
+
+cla(handles.axes3);
+cla(handles.axes4);
+cla(handles.axes5);
+cla(handles.axes6);
+cla(handles.axes7);
+cla(handles.axes8);
+imshow(handles.ImageSequence1(1).Im/256, 'Parent', handles.axes1);
+imshow(handles.ImageSequence2(1).Im/256, 'Parent', handles.axes2);
+elseif strcmp(file_dataset,'JELMOLI')
+    handles.ImageSequence1 = dir(fullfile(filefolder,file_dataset,file_doc1,fileType2))';
+    handles.ImageSequence2 = dir(fullfile(filefolder, file_dataset,file_doc2, fileType2))';
+    handles.NumImage = length(handles.ImageSequence1);
+%% Read data from USB stick
+handles.NumImage = length(handles.ImageSequence1)/2;
+handles.ImageSequence1(1:handles.NumImage)=[];
+handles.ImageSequence2(1:handles.NumImage)=[];
+%%
+for i = 1 : FrameNum%handles.NumImage
+        %%
+        handles.ImageSequence1(i).Image_loc =fullfile(filefolder, file_dataset, file_doc1,handles.ImageSequence1(i).name);
+        handles.ImageSequence1(i).Im = double(imread(handles.ImageSequence1(i).Image_loc));
+        handles.ImageSequence2(i).Image_loc = fullfile(filefolder, file_dataset,file_doc2,handles.ImageSequence2(i).name);
+        handles.ImageSequence2(i).Im = double(imread(handles.ImageSequence2(i).Image_loc));
+
+end
+   
+%%
+
+cla(handles.axes3);
+cla(handles.axes4);
+cla(handles.axes5);
+cla(handles.axes6);
+cla(handles.axes7);
+cla(handles.axes8);
+imshow(handles.ImageSequence1(1).Im/256, 'Parent', handles.axes1);
+imshow(handles.ImageSequence2(1).Im/256, 'Parent', handles.axes2);
+ elseif strcmp(file_dataset,'Sunnyday')
+    handles.ImageSequence1 = dir(fullfile(filefolder,file_dataset, file_doc1,fileType2))';
+    handles.ImageSequence2 = dir(fullfile(filefolder, file_dataset,file_doc2,fileType2))';
+    handles.NumImage = length(handles.ImageSequence1);
+%% Read data from USB stick
+handles.NumImage = length(handles.ImageSequence1)/2;
+handles.ImageSequence1(1:handles.NumImage)=[];
+handles.ImageSequence2(1:handles.NumImage)=[];
+%%
+for i = 1 : FrameNum%handles.NumImage
+        %%
+        handles.ImageSequence1(i).Image_loc = fullfile(filefolder, file_dataset, file_doc1, handles.ImageSequence1(i).name);
+        handles.ImageSequence1(i).Im = double(imread(handles.ImageSequence1(i).Image_loc));
+        handles.ImageSequence2(i).Image_loc = fullfile(filefolder,file_dataset,file_doc2, handles.ImageSequence2(i).name);
+        handles.ImageSequence2(i).Im = double(imread(handles.ImageSequence2(i).Image_loc));
+
+end
+   
+%%
+
+cla(handles.axes3);
+cla(handles.axes4);
+cla(handles.axes5);
+cla(handles.axes6);
+cla(handles.axes7);
+cla(handles.axes8);
+imshow(handles.ImageSequence1(1).Im/256, 'Parent', handles.axes1);
+imshow(handles.ImageSequence2(1).Im/256, 'Parent', handles.axes2);   
+        
+      
+else
+        handles.ImageSequence1 = dir(fullfile(filefolder,file_dataset, file_doc1,fileType))';
+        handles.ImageSequence2 = dir(fullfile(filefolder,file_dataset, file_doc2,fileType))';
+        handles.ImageSequence3 = dir(fullfile(filefolder,file_dataset, file_doc3,fileType))';
+        handles.ImageSequence4 = dir(fullfile(filefolder,file_dataset, file_doc4,fileType))';
+        handles.NumImage = length(handles.ImageSequence1);
+%% Read data from USB stick
+handles.NumImage = length(handles.ImageSequence1)/2;
+handles.ImageSequence1(1:handles.NumImage)=[];
+handles.ImageSequence2(1:handles.NumImage)=[];
+handles.ImageSequence3(1:handles.NumImage)=[];
+handles.ImageSequence4(1:handles.NumImage)=[];
+
+
+%%
+for i = 1 : FrameNum%handles.NumImage
+        %%
+        handles.ImageSequence1(i).Image_loc = fullfile(filefolder,file_dataset, file_doc1, handles.ImageSequence1(i).name);
         handles.ImageSequence1(i).Im = double(imread(handles.ImageSequence1(i).Image_loc));
         %%
-        handles.ImageSequence2(i).Image_loc = ['/' filefolder '/' file_dataset '/' file_doc2 '/' handles.ImageSequence2(i).name];
+        handles.ImageSequence2(i).Image_loc = fullfile(filefolder,file_dataset, file_doc2, handles.ImageSequence2(i).name);
         handles.ImageSequence2(i).Im = double(imread(handles.ImageSequence2(i).Image_loc));
         %%
-        handles.ImageSequence3(i).Image_loc = ['/' filefolder '/' file_dataset '/' file_doc3 '/' handles.ImageSequence3(i).name];
+        handles.ImageSequence3(i).Image_loc = fullfile(filefolder,file_dataset, file_doc3, handles.ImageSequence3(i).name);
         handles.ImageSequence3(i).Im = double(imread(handles.ImageSequence3(i).Image_loc));
         %%
-        handles.ImageSequence4(i).Image_loc = ['/' filefolder '/' file_dataset '/' file_doc4 '/' handles.ImageSequence4(i).name];
+        handles.ImageSequence4(i).Image_loc = fullfile(filefolder,file_dataset, file_doc4, handles.ImageSequence4(i).name);
         handles.ImageSequence4(i).Im = double(imread(handles.ImageSequence4(i).Image_loc));
         
         
@@ -288,11 +493,12 @@ imshow(handles.ImageSequence2(1).Im/256, 'Parent', handles.axes2);
 imshow(handles.ImageSequence3(1).Im/256, 'Parent', handles.axes3);
 imshow(handles.ImageSequence4(1).Im/256, 'Parent', handles.axes4);
 
-    end
 end
+
         
 handles.An=handles.c{1,count};
 Annotation=handles.An;
+if any(Annotation)
 [~,cn]=size(Annotation);
 cl=['y','m','c','r','g','b','k'];
 axes(handles.axes1);
@@ -308,7 +514,9 @@ for i=1:cn
     
 end
 set(handles.uitable1,'RowName',{'ID','h','w','xc','yc'},'data',Annotation);
+end
 guidata(hObject, handles);
+
 
 
 
@@ -501,31 +709,62 @@ function Extract_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 global count file_dataset2
+[m,n,~]=size(handles.ImageSequence1(count).Im);
 [~,cns]=size(handles.An);
-handles.An=round(handles.An);
-a=1;
-handles.IDvector=[];
+p=handles.An;
+
+
 % Area=zeros(1,cns);
 % for i=1:cns
 %     Area(i)=handles.An(2,i)*handles.An(3,i);
 % end
 % [~,cnm]=max(Area);
-for i=1:cns
-   image=handles.ImageSequence1(count).Im(handles.An(5,i)-handles.An(2,i)/2+1:handles.An(5,i)+handles.An(2,i)/2,handles.An(4,i)-handles.An(3,i)/2+1:handles.An(4,i)+handles.An(3,i)/2,:);
-%    if i~=cnm
-%        image_new=imresize(image,[handles.An(2,cnm),handles.An(3,cnm)]);
-%    end
+for j=1:cns
+   if p(5,j)-p(2,j)/2+1>0 && p(4,j)-p(3,j)/2+1>0 && p(5,j)+p(2,j)/2<=m && p(4,j)+p(3,j)/2<=n
+         image= handles.ImageSequence1(count).Im(p(5,j)-p(2,j)/2+1:p(5,j)+p(2,j)/2,p(4,j)-p(3,j)/2+1:p(4,j)+p(3,j)/2,:);
+      elseif p(5,j)-p(2,j)/2+1>0 && p(4,j)-p(3,j)/2+1>0 && p(5,j)+p(2,j)/2<=m && p(4,j)+p(3,j)/2>n
+         image= handles.ImageSequence1(count).Im(p(5,j)-p(2,j)/2+1:p(5,j)+p(2,j)/2,p(4,j)-p(3,j)/2+1:end,:);
+      elseif p(5,j)-p(2,j)/2+1>0 && p(4,j)-p(3,j)/2+1>0 && p(5,j)+p(2,j)/2>m && p(4,j)+p(3,j)/2<=n
+         image= handles.ImageSequence1(count).Im(p(5,j)-p(2,j)/2+1:end,p(4,j)-p(3,j)/2+1:p(4,j)+p(3,j)/2,:);
+      elseif p(5,j)-p(2,j)/2+1>0 && p(4,j)-p(3,j)/2+1>0 && p(5,j)+p(2,j)/2>m && p(4,j)+p(3,j)/2>n
+         image= handles.ImageSequence1(count).Im(p(5,j)-p(2,j)/2+1:end,p(4,j)-p(3,j)/2+1:end,:);
+      elseif p(5,j)-p(2,j)/2+1>0 && p(4,j)-p(3,j)/2+1<=0 && p(5,j)+p(2,j)/2<=m && p(4,j)+p(3,j)/2<=n
+         image= handles.ImageSequence1(count).Im(p(5,j)-p(2,j)/2+1:p(5,j)+p(2,j)/2,1:p(4,j)+p(3,j)/2,:);
+      elseif p(5,j)-p(2,j)/2+1>0 && p(4,j)-p(3,j)/2+1<=0 && p(5,j)+p(2,j)/2<=m && p(4,j)+p(3,j)/2>n
+         image= handles.ImageSequence1(count).Im(p(5,j)-p(2,j)/2+1:p(5,j)+p(2,j)/2,1:end,:); 
+      elseif p(5,j)-p(2,j)/2+1>0 && p(4,j)-p(3,j)/2+1<=0 && p(5,j)+p(2,j)/2>m && p(4,j)+p(3,j)/2<=n
+         image= handles.ImageSequence1(count).Im(p(5,j)-p(2,j)/2+1:end,1:p(4,j)+p(3,j)/2,:); 
+      elseif p(5,j)-p(2,j)/2+1>0 && p(4,j)-p(3,j)/2+1<=0 && p(5,j)+p(2,j)/2>m && p(4,j)+p(3,j)/2>n
+         image= handles.ImageSequence1(count).Im(p(5,j)-p(2,j)/2+1:end,1:end,:); 
+      elseif p(5,j)-p(2,j)/2+1<=0 && p(4,j)-p(3,j)/2+1>0 && p(5,j)+p(2,j)/2<=m && p(4,j)+p(3,j)/2<=n
+         image= handles.ImageSequence1(count).Im(1:p(5,j)+p(2,j)/2,p(4,j)-p(3,j)/2+1:p(4,j)+p(3,j)/2,:);
+      elseif p(5,j)-p(2,j)/2+1<=0 && p(4,j)-p(3,j)/2+1>0 && p(5,j)+p(2,j)/2<=m && p(4,j)+p(3,j)/2>n
+          image= handles.ImageSequence1(count).Im(1:p(5,j)+p(2,j)/2,p(4,j)-p(3,j)/2+1:end,:);
+      elseif p(5,j)-p(2,j)/2+1<=0 && p(4,j)-p(3,j)/2+1>0 && p(5,j)+p(2,j)/2>m && p(4,j)+p(3,j)/2<=n  
+          image= handles.ImageSequence1(count).Im(1:end,p(4,j)-p(3,j)/2+1:p(4,j)+p(3,j)/2,:);
+      elseif p(5,j)-p(2,j)/2+1<=0 && p(4,j)-p(3,j)/2+1>0 && p(5,j)+p(2,j)/2>m && p(4,j)+p(3,j)/2>n 
+          image= handles.ImageSequence1(count).Im(1:end,p(4,j)-p(3,j)/2+1:end,:);
+      elseif p(5,j)-p(2,j)/2+1<=0 && p(4,j)-p(3,j)/2+1<=0 && p(5,j)+p(2,j)/2<=m && p(4,j)+p(3,j)/2<=n
+          image= handles.ImageSequence1(count).Im(1:p(5,j)+p(2,j)/2,1:p(4,j)+p(3,j)/2,:);
+      elseif p(5,j)-p(2,j)/2+1<=0 && p(4,j)-p(3,j)/2+1<=0 && p(5,j)+p(2,j)/2<=m && p(4,j)+p(3,j)/2>n
+          image= handles.ImageSequence1(count).Im(1:p(5,j)+p(2,j)/2,1:end,:);
+      elseif p(5,j)-p(2,j)/2+1<=0 && p(4,j)-p(3,j)/2+1<=0 && p(5,j)+p(2,j)/2>m && p(4,j)+p(3,j)/2<=n
+          image= handles.ImageSequence1(count).Im(1:end,1:p(4,j)+p(3,j)/2,:);
+      elseif p(5,j)-p(2,j)/2+1<=0 && p(4,j)-p(3,j)/2+1<=0 && p(5,j)+p(2,j)/2>m && p(4,j)+p(3,j)/2>n
+          image= handles.ImageSequence1(count).Im(1:end,1:end,:);
+   end            
    image=uint8(image);
-   if any(handles.IDvector==handles.An(1,i));
-        imwrite(image,[file_dataset2, '_extract','/Object',num2str(handles.An(1,i)),'/Frame',num2str(count-1),'.jpg']);
+   
+   if any(handles.IDvector==handles.An(1,j));
+        imwrite(image,fullfile([file_dataset2, '_extract'],['Object',num2str(handles.An(1,j))],handles.ImageSequence1(count).name));
     else
-        mkdir([file_dataset2,'_extract'],['Object',num2str(handles.An(1,i))]);
-        imwrite(image,[file_dataset2, '_extract', '/Object',num2str(handles.An(1,i)),'/Frame',num2str(count-1),'.jpg']);
-        handles.IDvector(a)=handles.An(1,i);
-        a=a+1;
+        mkdir([file_dataset2,'_extract'],['Object',num2str(handles.An(1,j))]);
+        imwrite(image,fullfile([file_dataset2, '_extract'], ['Object',num2str(handles.An(1,j))],handles.ImageSequence1(count).name));
+        handles.IDvector(handles.a)=handles.An(1,j);
+        handles.a=handles.a+1;
     end
 end
-handles.ObjectNum=a;
+handles.ObjectNum=handles.a;
 guidata(hObject, handles);
 set(handles.result,'string','Extracting is successful !');
 
@@ -540,7 +779,7 @@ function next_Callback(hObject, eventdata, handles)
 global count file_dataset
 count=count+1;
 set(handles.result,'string','');
-if strcmp(file_dataset,'Crowd_PETS09S2L1/S2/L1/Time_12-34')
+if strcmp(file_dataset,fullfile('Crowd_PETS09S2L1','S2','L1','Time_12-34'))%'Crowd_PETS09S2L1/S2/L1/Time_12-34')
 imshow(handles.ImageSequence1(count).Im/256, 'Parent', handles.axes1);
 imshow(handles.ImageSequence3(count).Im/256, 'Parent', handles.axes3);
 imshow(handles.ImageSequence4(count).Im/256, 'Parent', handles.axes4);
@@ -548,23 +787,43 @@ imshow(handles.ImageSequence5(count).Im/256, 'Parent', handles.axes5);
 imshow(handles.ImageSequence6(count).Im/256, 'Parent', handles.axes6);
 imshow(handles.ImageSequence7(count).Im/256, 'Parent', handles.axes7);
 imshow(handles.ImageSequence8(count).Im/256, 'Parent', handles.axes8);
-else if strcmp(file_dataset,'Crowd_PETS09S3MF/S3/Multiple_Flow/Time_12-43')
+elseif strcmp(file_dataset,fullfile('Crowd_PETS09S3MF','S3','Multiple_Flow','Time_12-43'))%'Crowd_PETS09S3MF/S3/Multiple_Flow/Time_12-43')
         imshow(handles.ImageSequence1(count).Im/256, 'Parent', handles.axes1);
         imshow(handles.ImageSequence2(count).Im/256, 'Parent', handles.axes2);
         imshow(handles.ImageSequence5(count).Im/256, 'Parent', handles.axes5);
         imshow(handles.ImageSequence6(count).Im/256, 'Parent', handles.axes6);
         imshow(handles.ImageSequence7(count).Im/256, 'Parent', handles.axes7);
         imshow(handles.ImageSequence8(count).Im/256, 'Parent', handles.axes8);
-    else
+    
+elseif strcmp(file_dataset,'tud-stadtmitte')
+       imshow(handles.ImageSequence1(count).Im/256, 'Parent', handles.axes1);
+elseif strcmp(file_dataset,'tud-campus')
+       imshow(handles.ImageSequence1(count).Im/256, 'Parent', handles.axes1);
+elseif strcmp(file_dataset,'tud-crossing')
+       imshow(handles.ImageSequence1(count).Im/256, 'Parent', handles.axes1);
+elseif strcmp(file_dataset,'Sequence#0')
+        imshow(handles.ImageSequence1(count).Im/256, 'Parent', handles.axes1);
+        imshow(handles.ImageSequence2(count).Im/256, 'Parent', handles.axes2);
+elseif strcmp(file_dataset,'Bahnhof')
+        imshow(handles.ImageSequence1(count).Im/256, 'Parent', handles.axes1);
+        imshow(handles.ImageSequence2(count).Im/256, 'Parent', handles.axes2); 
+elseif strcmp(file_dataset,'JELMOLI')
+        imshow(handles.ImageSequence1(count).Im/256, 'Parent', handles.axes1);
+        imshow(handles.ImageSequence2(count).Im/256, 'Parent', handles.axes2);
+elseif strcmp(file_dataset,'Sunnyday')
+        imshow(handles.ImageSequence1(count).Im/256, 'Parent', handles.axes1);
+        imshow(handles.ImageSequence2(count).Im/256, 'Parent', handles.axes2);            
+else
         imshow(handles.ImageSequence1(count).Im/256, 'Parent', handles.axes1);
         imshow(handles.ImageSequence2(count).Im/256, 'Parent', handles.axes2);
         imshow(handles.ImageSequence3(count).Im/256, 'Parent', handles.axes3);
         imshow(handles.ImageSequence4(count).Im/256, 'Parent', handles.axes4);
-    end
 end
+
 %%
 handles.An=handles.c{1,count};
 Annotation=handles.An;
+if any(Annotation)
 [~,cn]=size(Annotation);
 cl=['y','m','c','r','g','b','k'];
 axes(handles.axes1);
@@ -580,7 +839,9 @@ for i=1:cn
     
 end
 set(handles.uitable1,'RowName',{'ID','h','w','xc','yc'},'data',Annotation);
+end
 guidata(hObject, handles);
+
 
 
 
@@ -597,34 +858,77 @@ function popupmenu1_Callback(hObject, eventdata, handles)
 
 % Hints: contents = cellstr(get(hObject,'String')) returns popupmenu1 contents as cell array
 %        contents{get(hObject,'Value')} returns selected item from popupmenu1
-global file_dataset file_dataset2
+global file_dataset file_dataset2 s
 val=get(hObject,'value');
 str=get(hObject,'string');
 switch str{val}
     case 'PETS2009S1L1_13-57'
-        file_dataset='Crowd_PETS09S1L1/S1/L1/Time_13-57';
+        %file_dataset='Crowd_PETS09S1L1/S1/L1/Time_13-57';
+        file_dataset=fullfile('Crowd_PETS09S1L1','S1','L1','Time_13-57');
         file_dataset2='PETS2009S1L1_13-57';
+        s=1;
     case 'PETS2009S1L1_13-59'
         file_dataset='Crowd_PETS09S1L1/S1/L1/Time_13-59';
+        %file_dataset=fullfile('Crowd_PETS09S1L1','S1','L1','Time_13-59');
         file_dataset2='PETS2009S1L1_13-59';
+        s=1;
     case 'PETS2009S1L2_14-06'
-        file_dataset='Crowd_PETS09S1L2/S1/L2/Time_14-06';
+       % file_dataset='Crowd_PETS09S1L2/S1/L2/Time_14-06';
+        file_dataset=fullfile('Crowd_PETS09S1L2','S1','L2','Time_14-06');
         file_dataset2='PETS2009S1L2_14-06';
     case 'PETS2009S1L2_14-31'
-        file_dataset='Crowd_PETS09S1L2/S1/L2/Time_14-31';
+        %file_dataset='Crowd_PETS09S1L2/S1/L2/Time_14-31';
+        file_dataset=fullfile('Crowd_PETS09S1L2','S1','L2','Time_14-31');
         file_dataset2='PETS2009S1L2_14-31';
+        s=1;
     case 'PETS2009S2L1_12-34'
-        file_dataset='Crowd_PETS09S2L1/S2/L1/Time_12-34';
+        %file_dataset='Crowd_PETS09S2L1/S2/L1/Time_12-34';
+        file_dataset=fullfile('Crowd_PETS09S2L1','S2','L1','Time_12-34');
         file_dataset2='PETS2009S2L1_12-34';
+        s=1;
     case 'PETS2009S2L2_14-55'
-        file_dataset='Crowd_PETS09S2L2/S2/L2/Time_14-55';
+        %file_dataset='Crowd_PETS09S2L2/S2/L2/Time_14-55';
+        file_dataset=fullfile('Crowd_PETS09S2L2','S2','L2','Time_14-55');
         file_dataset2='PETS2009S2L2_14-55';
+        s=1;
     case 'PETS2009S2L3_14-41'
-        file_dataset='Crowd_PETS09S2L3/S2/L3/Time_14-41';
+        %file_dataset='Crowd_PETS09S2L3/S2/L3/Time_14-41';
+        file_dataset=fullfile('Crowd_PETS09S2L3','S2','L3','Time_14-41');
         file_dataset2='PETS2009S2L3_14-41';
+        s=1;
     case 'PETS2009S3MF_12-43'
-        file_dataset='Crowd_PETS09S3MF/S3/Multiple_Flow/Time_12-43';
+        %file_dataset='Crowd_PETS09S3MF/S3/Multiple_Flow/Time_12-43';
+        file_dataset=fullfile('Crowd_PETS09S3MF','S3','Multiple_Flow','Time_12-43');
         file_dataset2='PETS2009S3MF_12-43';
+        s=1;
+    case 'TUD-Stadtmitte'
+        file_dataset='tud-stadtmitte';
+        file_dataset2='tud-stadtmitte';
+        s=2;
+    case 'TUD-Campus'
+        file_dataset='tud-campus';
+        file_dataset2='tud-campus';
+        s=2;
+    case 'TUD-Crossing'
+        file_dataset='tud-crossing';
+        file_dataset2='tud-crossing';
+        s=2;
+    case 'Sequence#0'
+        file_dataset='Sequence#0';
+        file_dataset2='Sequence#0';
+        s=2;
+    case 'Bahnhof'
+        file_dataset='Bahnhof';
+        file_dataset2='Bahnhof';
+        s=2;
+    case 'JELMOLI'
+        file_dataset='JELMOLI';
+        file_dataset2='JELMOLI';
+        s=2;
+    case 'Sunnyday'
+        file_dataset='Sunnyday';
+        file_dataset2='Sunnyday';
+        s=2;
 end
         
 
@@ -658,19 +962,23 @@ function Scale_Callback(hObject, eventdata, handles)
 % hObject    handle to Scale (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-global file_dataset2
+global file_dataset2 s
 set(handles.result,'string','');
+if s==1
 fileType = '*.jpg';
-filefolder='Users/liujiaqi/Documents/MAtLAB/PETS';
+else
+    fileType='*.png';
+end
+filefolder=pwd;
 a=handles.ObjectNum-1;
 ID=handles.IDvector;
 
 for i=1:a
-    ImageExtract = dir(['/' filefolder '/' [file_dataset2, '_extract'] '/' ['Object', num2str(ID(i))] '/' fileType])';
+    ImageExtract = dir(fullfile(filefolder,[file_dataset2, '_extract'], ['Object', num2str(ID(i))],fileType))';
     Framenum=length(ImageExtract);
     Area=zeros(Framenum,1);
     for j=1:Framenum
-    ImageExtract(j).Image_loc=['/' filefolder '/' [file_dataset2, '_extract'] '/' ['Object', num2str(ID(i))] '/' ImageExtract(j).name];
+    ImageExtract(j).Image_loc=fullfile(filefolder, [file_dataset2, '_extract'] , ['Object', num2str(ID(i))] , ImageExtract(j).name);
     ImageExtract(j).Im=double(imread(ImageExtract(j).Image_loc));
     [h,w,~]=size(ImageExtract(j).Im);
     ImageExtract(j).h=h;

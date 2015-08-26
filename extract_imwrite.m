@@ -33,19 +33,23 @@ for i=0:Num_frames-1
      c{1,i+1}=c1;
 end
 %%
-fileType = '*.jpg';
-fileType2 = '.jpg';
+fileType = '*.png';
+fileType2 = '.png';
 file_doc1 = 'View_001';
-file_dataset='datasets/Crowd_PETS09S1L2/S1/L2/Time_14-31';
-file_dataset2='PETS2009S1L2_14-31';
+
+file_dataset='datasets/Sunnyday';
+file_dataset2='Sunnyday';
+%ImageSequence = dir([file_dataset '/' file_doc1 '/' fileType])';
 ImageSequence = dir([file_dataset '/' file_doc1 '/' fileType])';
 for i = 1 : Num_frames
       
+        %ImageSequence(i).Image_loc = [file_dataset '/' file_doc1 '/' ImageSequence(i).name];
         ImageSequence(i).Image_loc = [file_dataset '/' file_doc1 '/' ImageSequence(i).name];
         ImageSequence(i).Im = double(imread(ImageSequence(i).Image_loc));
 end
 
 %%
+[m,n,q]=size(ImageSequence(1).Im);
 a=1;
 IDvector=[];
 for i=1:Num_frames
@@ -53,17 +57,47 @@ for i=1:Num_frames
     [~,cns]=size(c{1,i});
   for j=1:cns
       p=c{1,i};
-      image=ImageSequence(i).Im(p(5,j)-p(2,j)/2+1:p(5,j)+p(2,j)/2,p(4,j)-p(3,j)/2+1:p(4,j)+p(3,j)/2,:);
-   %image=ImageSequence(i).Im(c{1,i}(5,j)-c{1,i}(2,j)/2+1:c{1,i}(5,j)+c{1,i}(2,j)/2,c{1,i}(4,j)-c{1,i}(3,j)/2+1:c{1,i}(4,j)+c{1,i}(3,j)/2,:);
-%    if i~=cnm
-%        image_new=imresize(image,[handles.An(2,cnm),handles.An(3,cnm)]);
-%    end
+      if p(5,j)-p(2,j)/2+1>0 && p(4,j)-p(3,j)/2+1>0 && p(5,j)+p(2,j)/2<=m && p(4,j)+p(3,j)/2<=n
+         image= ImageSequence(i).Im(p(5,j)-p(2,j)/2+1:p(5,j)+p(2,j)/2,p(4,j)-p(3,j)/2+1:p(4,j)+p(3,j)/2,:);
+      elseif p(5,j)-p(2,j)/2+1>0 && p(4,j)-p(3,j)/2+1>0 && p(5,j)+p(2,j)/2<=m && p(4,j)+p(3,j)/2>n
+         image= ImageSequence(i).Im(p(5,j)-p(2,j)/2+1:p(5,j)+p(2,j)/2,p(4,j)-p(3,j)/2+1:end,:);
+      elseif p(5,j)-p(2,j)/2+1>0 && p(4,j)-p(3,j)/2+1>0 && p(5,j)+p(2,j)/2>m && p(4,j)+p(3,j)/2<=n
+         image= ImageSequence(i).Im(p(5,j)-p(2,j)/2+1:end,p(4,j)-p(3,j)/2+1:p(4,j)+p(3,j)/2,:);
+      elseif p(5,j)-p(2,j)/2+1>0 && p(4,j)-p(3,j)/2+1>0 && p(5,j)+p(2,j)/2>m && p(4,j)+p(3,j)/2>n
+         image= ImageSequence(i).Im(p(5,j)-p(2,j)/2+1:end,p(4,j)-p(3,j)/2+1:end,:);
+      elseif p(5,j)-p(2,j)/2+1>0 && p(4,j)-p(3,j)/2+1<=0 && p(5,j)+p(2,j)/2<=m && p(4,j)+p(3,j)/2<=n
+         image= ImageSequence(i).Im(p(5,j)-p(2,j)/2+1:p(5,j)+p(2,j)/2,1:p(4,j)+p(3,j)/2,:);
+      elseif p(5,j)-p(2,j)/2+1>0 && p(4,j)-p(3,j)/2+1<=0 && p(5,j)+p(2,j)/2<=m && p(4,j)+p(3,j)/2>n
+         image= ImageSequence(i).Im(p(5,j)-p(2,j)/2+1:p(5,j)+p(2,j)/2,1:end,:); 
+      elseif p(5,j)-p(2,j)/2+1>0 && p(4,j)-p(3,j)/2+1<=0 && p(5,j)+p(2,j)/2>m && p(4,j)+p(3,j)/2<=n
+         image= ImageSequence(i).Im(p(5,j)-p(2,j)/2+1:end,1:p(4,j)+p(3,j)/2,:); 
+      elseif p(5,j)-p(2,j)/2+1>0 && p(4,j)-p(3,j)/2+1<=0 && p(5,j)+p(2,j)/2>m && p(4,j)+p(3,j)/2>n
+         image= ImageSequence(i).Im(p(5,j)-p(2,j)/2+1:end,1:end,:); 
+      elseif p(5,j)-p(2,j)/2+1<=0 && p(4,j)-p(3,j)/2+1>0 && p(5,j)+p(2,j)/2<=m && p(4,j)+p(3,j)/2<=n
+         image= ImageSequence(i).Im(1:p(5,j)+p(2,j)/2,p(4,j)-p(3,j)/2+1:p(4,j)+p(3,j)/2,:);
+      elseif p(5,j)-p(2,j)/2+1<=0 && p(4,j)-p(3,j)/2+1>0 && p(5,j)+p(2,j)/2<=m && p(4,j)+p(3,j)/2>n
+          image= ImageSequence(i).Im(1:p(5,j)+p(2,j)/2,p(4,j)-p(3,j)/2+1:end,:);
+      elseif p(5,j)-p(2,j)/2+1<=0 && p(4,j)-p(3,j)/2+1>0 && p(5,j)+p(2,j)/2>m && p(4,j)+p(3,j)/2<=n  
+          image= ImageSequence(i).Im(1:end,p(4,j)-p(3,j)/2+1:p(4,j)+p(3,j)/2,:);
+      elseif p(5,j)-p(2,j)/2+1<=0 && p(4,j)-p(3,j)/2+1>0 && p(5,j)+p(2,j)/2>m && p(4,j)+p(3,j)/2>n 
+          image= ImageSequence(i).Im(1:end,p(4,j)-p(3,j)/2+1:end,:);
+      elseif p(5,j)-p(2,j)/2+1<=0 && p(4,j)-p(3,j)/2+1<=0 && p(5,j)+p(2,j)/2<=m && p(4,j)+p(3,j)/2<=n
+          image= ImageSequence(i).Im(1:p(5,j)+p(2,j)/2,1:p(4,j)+p(3,j)/2,:);
+      elseif p(5,j)-p(2,j)/2+1<=0 && p(4,j)-p(3,j)/2+1<=0 && p(5,j)+p(2,j)/2<=m && p(4,j)+p(3,j)/2>n
+          image= ImageSequence(i).Im(1:p(5,j)+p(2,j)/2,1:end,:);
+      elseif p(5,j)-p(2,j)/2+1<=0 && p(4,j)-p(3,j)/2+1<=0 && p(5,j)+p(2,j)/2>m && p(4,j)+p(3,j)/2<=n
+          image= ImageSequence(i).Im(1:end,1:p(4,j)+p(3,j)/2,:);
+      elseif p(5,j)-p(2,j)/2+1<=0 && p(4,j)-p(3,j)/2+1<=0 && p(5,j)+p(2,j)/2>m && p(4,j)+p(3,j)/2>n
+          image= ImageSequence(i).Im(1:end,1:end,:);
+      end            
    image=uint8(image);
    if any(IDvector==c{1,i}(1,j));
-        imwrite(image,[file_dataset2, '_extract','/Object',num2str(c{1,i}(1,j)),'/Frame',num2str(i-1),fileType2]);
+       % imwrite(image,[file_dataset2, '_extract','/Object',num2str(c{1,i}(1,j)),'/Frame',num2str(i-1),fileType2]);
+        imwrite(image,[file_dataset2, '_extract','/Object',num2str(c{1,i}(1,j)),'/', ImageSequence(i).name]);
     else
         mkdir([file_dataset2,'_extract'],['Object',num2str(c{1,i}(1,j))]);
-        imwrite(image,[file_dataset2, '_extract', '/Object',num2str(c{1,i}(1,j)),'/Frame',num2str(i-1),fileType2]);
+        %imwrite(image,[file_dataset2, '_extract', '/Object',num2str(c{1,i}(1,j)),'/Frame',num2str(i-1),fileType2]);
+        imwrite(image,[file_dataset2, '_extract','/Object',num2str(c{1,i}(1,j)),'/', ImageSequence(i).name]);
         IDvector(a)=c{1,i}(1,j);
         a=a+1;
    end
